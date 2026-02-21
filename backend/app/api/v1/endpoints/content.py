@@ -7,6 +7,7 @@ from app.api import deps
 from app.services.gemini_service import gemini_service
 from app.services.voice_service import voice_service
 from app.services.video_service import video_service
+from app.services.ambassador_service import ambassador_service
 from app.schemas.agents import ContentRequest
 from app.models.sql_models import User
 
@@ -60,6 +61,14 @@ async def generate_content(
 
             # Generate AI Video
             video_prompt = content.get("video_directing_prompt", "")
+            
+            # Apply AI Ambassador Face Consistency (Phase 2 God Mode)
+            # In a real app, we'd pull the user's selected persona from the DB
+            persona_id = "persona_1" 
+            consistency_suffix = ambassador_service.get_consistency_prompt_suffix(persona_id)
+            if video_prompt and consistency_suffix:
+                video_prompt += consistency_suffix
+
             video_url = None
             if video_prompt:
                 video_url = await video_service.generate_video(video_prompt)

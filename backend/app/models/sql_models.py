@@ -74,3 +74,37 @@ class SalesUpdate(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
     
     user = relationship("User", back_populates="sales_updates")
+
+class Trend(Base):
+    __tablename__ = 'trends'
+    
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, nullable=False)
+    type = Column(String)  # 'audio', 'hashtag', 'topic'
+    source = Column(String) # 'tiktok', 'instagram'
+    relevance_score = Column(Float, default=0)
+    discovery_date = Column(DateTime, default=datetime.utcnow)
+    metadata_json = Column(Text) # JSON string for audio link, viz, etc.
+
+class AdCampaign(Base):
+    __tablename__ = 'ad_campaigns'
+    
+    id = Column(Integer, primary_key=True, index=True)
+    campaign_id = Column(Integer, ForeignKey('campaigns.id'), nullable=False)
+    platform = Column(String) # 'meta', 'google', 'tiktok'
+    ad_id = Column(String) # External ID
+    budget = Column(Float)
+    status = Column(String) # 'active', 'paused', 'completed'
+    auto_pilot = Column(Boolean, default=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+class AdPerformance(Base):
+    __tablename__ = 'ad_performance'
+    
+    id = Column(Integer, primary_key=True, index=True)
+    ad_campaign_id = Column(Integer, ForeignKey('ad_campaigns.id'), nullable=False)
+    clicks = Column(Integer, default=0)
+    impressions = Column(Integer, default=0)
+    ctr = Column(Float, default=0.0)
+    spend = Column(Float, default=0.0)
+    date = Column(DateTime, default=datetime.utcnow)

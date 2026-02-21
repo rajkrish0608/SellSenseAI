@@ -12,38 +12,53 @@ class WhatsAppOrchestratorAgent:
     Receives incoming WhatsApp text, parses intent, and triggers actions.
     """
     
-    async def process_incoming_message(self, phone_number: str, message_text: str, db: Session):
+    async def process_incoming_message(self, phone_number: str, message_text: str, db: Session, is_audio: bool = False):
         # 1. Find user by phone number
         user = db.query(User).filter(User.phone == phone_number).first()
         
         if not user:
-            # Welcome new unspecified user
             await whatsapp_service.send_message(
                 phone_number,
-                "Welcome to SellSenseai! I don't recognize this number. Please log in to the dashboard and add your phone number to your profile to enable autonomous commands via WhatsApp."
+                "Welcome to SellSenseai! Please log in to the dashboard to enable commands."
             )
             return
 
-        business = db.query(BusinessProfile).filter(BusinessProfile.user_id == user.id).first()
+        business = user.business_profile
         business_name = business.business_name if business else "your business"
 
+        # Simulate Speech-to-Text if it's an audio message
+        processed_text = message_text
+        if is_audio:
+            logger.info(f"🎤 [VOICE NOTE] Processing audio from {phone_number}...")
+            # In production, we'd use OpenAI Whisper or Google Speech-to-Text here
+            processed_text = f"[TRANSCRIPT]: {message_text}"
+
         # 2. Parse Intent using Gemini
-        prompt = f"""You are the orchestrator AI for {business_name}. 
-        A user has sent you a WhatsApp message. Parse their intent and extract parameters.
+        prompt = f"""You are the Business Intelligence AI for {business_name}. 
+        Niche: {business.niche if business else 'N/A'}
         
-        User Message: "{message_text}"
+        User Message: "{processed_text}"
+        
+        Available Intents:
+        - "create_campaign": Start or plan a new marketing campaign.
+        - "trend_jacking": Respond to a trend alert.
+        - "counter_campaign": Respond to a rival's move (e.g., "RETALIATE", "Counter that Starbucks sale").
+        - "business_query": Ask for sales figures, top products, or ROI.
+        - "general_chat": Salutations or unrelated questions.
+        
+        If intent is "business_query", also extract what they are asking (metric, period).
         
         Return JSON ONLY:
         {{
-            "intent": "create_campaign" | "status_update" | "generic_chat" | "unknown",
-            "campaign_topic": "Extracted topic or null",
-            "campaign_budget": "Extracted budget or null",
-            "response_text": "A friendly confirmation message to send immediately back to the user via WhatsApp (e.g. 'Got it! I am crafting a campaign for X right now...')"
-        }}"""
+            "intent": "one of the above",
+            "metric": "sales" | "roi" | "spend" | "inventory" | null,
+            "reply_text": "A friendly confirmation or the actual answer if it's generic knowledge"
+        }}
+        """
 
-        parsed_data = gemini_service.generate_json(prompt, max_tokens=800)
+        parsed = gemini_service.generate_json(prompt)
         
-        if not parsed_data:
+        if not parsed:
             await whatsapp_service.send_message(
                 phone_number,
                 "I'm sorry, my AI brain had a slight glitch understanding that. Could you rephrase it?"
@@ -51,24 +66,34 @@ class WhatsAppOrchestratorAgent:
             return
 
         # 3. Send immediate response to user
-        response_text = parsed_data.get("response_text", "Understood. Let me process that for you.")
-        await whatsapp_service.send_message(phone_number, response_text)
+        reply = parsed.get("reply_text", "Understood. Let me process that for you.")
+        await whatsapp_service.send_message(phone_number, reply)
 
         # 4. Handle specific intents
-        intent = parsed_data.get("intent")
-        
-        if intent == "create_campaign":
-            # Here we would trigger the full Analyst -> Strategy -> Content pipeline
-            # Typically this would be pushed to a background task cue like Celery. 
-            # For this MVP simulation, we simulate the delay and then send a success message.
+        if intent in ["create_campaign", "trend_jacking", "counter_campaign"]:
             import asyncio
-            asyncio.create_task(self._simulate_campaign_creation(phone_number, parsed_data))
+            asyncio.create_task(self._simulate_campaign_creation(phone_number, parsed))
+        elif intent == "business_query":
+            # In production, we'd query the DB here. For the MVP, we return a smart mock.
+            metric = parsed.get("metric", "sales")
+            if metric == "sales":
+                val = "₹1,24,500"
+                growth = "+12.5%"
+            elif metric == "roi":
+                val = "4.2x"
+                growth = "+0.8"
+            else:
+                val = "3active"
+                growth = "Stable"
+                
+            report = f"📊 *{business_name} Report*\\n\\nYour {metric} for this period is *{val}* ({growth} vs prev period).\\n\\nYour top-selling product continues to be the *Premium Coffee Blend*."
+            await whatsapp_service.send_message(phone_number, report)
 
-    async def _simulate_campaign_creation(self, phone_number: str, parsed_data: dict):
+    async def _simulate_campaign_creation(self, phone_number: str, parsed: dict):
         import asyncio
         await asyncio.sleep(5)  # Simulate API processing time for Strategy and Content Bots
         
-        topic = parsed_data.get("campaign_topic", "your topic")
+        topic = parsed.get("campaign_context", "your topic")
         success_msg = f"🎉 Great news! Your campaign for '{topic}' has been fully generated by the AI Strategy & Content bots. Check your dashboard to approve the final videos and posts!"
         
         await whatsapp_service.send_message(phone_number, success_msg)
