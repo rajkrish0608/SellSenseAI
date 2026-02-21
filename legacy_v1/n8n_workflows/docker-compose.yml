@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: n8n-agentic-ai
+    restart: unless-stopped
+    ports:
+      - "5678:5678"
+    environment:
+      # Basic Settings
+      - N8N_BASIC_AUTH_ACTIVE=true
+      - N8N_BASIC_AUTH_USER=admin
+      - N8N_BASIC_AUTH_PASSWORD=admin123
+      
+      # Timezone
+      - GENERIC_TIMEZONE=Asia/Kolkata
+      - TZ=Asia/Kolkata
+      
+      # Webhook URL
+      - WEBHOOK_URL=http://localhost:5678/
+      
+      # Enable Functions
+      - NODE_FUNCTION_ALLOW_BUILTIN=*
+      - NODE_FUNCTION_ALLOW_EXTERNAL=*
+      
+      # Execution Mode
+      - EXECUTIONS_MODE=regular
+      
+      # Data Folder
+      - N8N_USER_FOLDER=/home/node/.n8n
+      
+    volumes:
+      - n8n_data:/home/node/.n8n
+    
+    # Allow access to host machine (for Flask)
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    
+    networks:
+      - agentic-ai-network
+
+networks:
+  agentic-ai-network:
+    driver: bridge
+
+volumes:
+  n8n_data:
+    driver: local

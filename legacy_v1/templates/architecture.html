@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+{% extends "base.html" %}
+
+{% block title %}System Architecture - Agentic Sales AI{% endblock %}
+
+{% block body %}
+<div style="background: var(--bg-primary); min-height: 100vh; padding: 40px;">
+    <div style="max-width: 1400px; margin: 0 auto;">
+        <!-- Header -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px;">
+            <div>
+                <h1 style="font-size: 36px; font-weight: 700; color: var(--text-primary); margin-bottom: 8px;">
+                    🏗️ System Architecture
+                </h1>
+                <p style="font-size: 18px; color: var(--text-secondary);">
+                    Multi-Agent AI Architecture powered by Google Gemini
+                </p>
+            </div>
+            <a href="{{ url_for('demo_hub') }}" class="btn btn-secondary">← Back to Demo Hub</a>
+        </div>
+        
+        <!-- Architecture Diagram -->
+        <div class="card fade-in" style="margin-bottom: 32px;">
+            <div class="card-header">
+                <h3 class="card-title">📊 System Flow Diagram</h3>
+            </div>
+            
+            <div style="padding: 40px; background: var(--bg-secondary); overflow-x: auto;">
+                <svg width="1200" height="500" viewBox="0 0 1200 500" style="max-width: 100%; height: auto;">
+                    <!-- User Input -->
+                    <rect x="50" y="200" width="150" height="80" rx="12" fill="#1a1f37" stroke="#5b8def" stroke-width="2"/>
+                    <text x="125" y="235" text-anchor="middle" fill="#fff" font-size="16" font-weight="600">👤 User</text>
+                    <text x="125" y="255" text-anchor="middle" fill="#8b92b2" font-size="12">Business Info</text>
+                    
+                    <!-- Arrow 1 -->
+                    <path d="M 200 240 L 270 240" stroke="#5b8def" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+                    
+                    <!-- Flask Backend -->
+                    <rect x="270" y="200" width="150" height="80" rx="12" fill="#1a1f37" stroke="#10b981" stroke-width="2"/>
+                    <text x="345" y="235" text-anchor="middle" fill="#fff" font-size="16" font-weight="600">⚙️ Flask API</text>
+                    <text x="345" y="255" text-anchor="middle" fill="#8b92b2" font-size="12">Python Backend</text>
+                    
+                    <!-- Arrow 2 -->
+                    <path d="M 420 240 L 490 240" stroke="#5b8def" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+                    
+                    <!-- Google Gemini -->
+                    <rect x="490" y="180" width="180" height="120" rx="12" fill="#1a1f37" stroke="#f59e0b" stroke-width="3"/>
+                    <text x="580" y="215" text-anchor="middle" fill="#fff" font-size="18" font-weight="700">🤖 Google Gemini</text>
+                    <text x="580" y="235" text-anchor="middle" fill="#8b92b2" font-size="12">FREE AI Engine</text>
+                    <text x="580" y="255" text-anchor="middle" fill="#10b981" font-size="11">60 req/min • ₹0 cost</text>
+                    
+                    <!-- Arrows to Agents -->
+                    <path d="M 670 240 L 730 150" stroke="#5b8def" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+                    <path d="M 670 240 L 730 240" stroke="#5b8def" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+                    <path d="M 670 240 L 730 330" stroke="#5b8def" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+                    
+                    <!-- Agent 1: Analyst -->
+                    <rect x="730" y="80" width="180" height="100" rx="12" fill="#1a1f37" stroke="#f59e0b" stroke-width="2"/>
+                    <text x="820" y="110" text-anchor="middle" fill="#fff" font-size="16" font-weight="600">🔍 Agent 1</text>
+                    <text x="820" y="130" text-anchor="middle" fill="#fff" font-size="14">Analyst Bot</text>
+                    <text x="820" y="150" text-anchor="middle" fill="#8b92b2" font-size="11">Sales Analysis</text>
+                    <text x="820" y="165" text-anchor="middle" fill="#8b92b2" font-size="11">Trend Detection</text>
+                    
+                    <!-- Agent 2: Strategy -->
+                    <rect x="730" y="200" width="180" height="100" rx="12" fill="#1a1f37" stroke="#8b5cf6" stroke-width="2"/>
+                    <text x="820" y="230" text-anchor="middle" fill="#fff" font-size="16" font-weight="600">🧠 Agent 2</text>
+                    <text x="820" y="250" text-anchor="middle" fill="#fff" font-size="14">Strategy Bot</text>
+                    <text x="820" y="270" text-anchor="middle" fill="#8b92b2" font-size="11">7-Day Plans</text>
+                    <text x="820" y="285" text-anchor="middle" fill="#8b92b2" font-size="11">Campaign Strategy</text>
+                    
+                    <!-- Agent 3: Content -->
+                    <rect x="730" y="320" width="180" height="100" rx="12" fill="#1a1f37" stroke="#06b6d4" stroke-width="2"/>
+                    <text x="820" y="350" text-anchor="middle" fill="#fff" font-size="16" font-weight="600">🎨 Agent 3</text>
+                    <text x="820" y="370" text-anchor="middle" fill="#fff" font-size="14">Content Bot</text>
+                    <text x="820" y="390" text-anchor="middle" fill="#8b92b2" font-size="11">Post Generation</text>
+                    <text x="820" y="405" text-anchor="middle" fill="#8b92b2" font-size="11">Image Creation</text>
+                    
+                    <!-- Arrows to Output -->
+                    <path d="M 910 130 L 970 240" stroke="#5b8def" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+                    <path d="M 910 250 L 970 240" stroke="#5b8def" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+                    <path d="M 910 370 L 970 240" stroke="#5b8def" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+                    
+                    <!-- Output -->
+                    <rect x="970" y="200" width="180" height="80" rx="12" fill="#1a1f37" stroke="#10b981" stroke-width="2"/>
+                    <text x="1060" y="230" text-anchor="middle" fill="#fff" font-size="16" font-weight="600">✨ Campaign</text>
+                    <text x="1060" y="250" text-anchor="middle" fill="#8b92b2" font-size="12">7-Day Content</text>
+                    <text x="1060" y="265" text-anchor="middle" fill="#10b981" font-size="11">Ready to Post!</text>
+                    
+                    <!-- Arrow marker -->
+                    <defs>
+                        <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                            <polygon points="0 0, 10 3, 0 6" fill="#5b8def" />
+                        </marker>
+                    </defs>
+                </svg>
+            </div>
+        </div>
+        
+        <!-- Tech Stack -->
+        <div class="grid grid-3" style="gap: 24px; margin-bottom: 32px;">
+            <div class="card fade-in">
+                <h3 style="font-size: 18px; font-weight: 600; color: var(--text-primary); margin-bottom: 16px;">
+                    🔧 Backend Stack
+                </h3>
+                <ul style="list-style: none; padding: 0; color: var(--text-secondary); font-size: 14px; line-height: 2;">
+                    <li>✅ Flask (Python Web Framework)</li>
+                    <li>✅ SQLAlchemy (Database ORM)</li>
+                    <li>✅ Google Gemini AI (FREE API)</li>
+                    <li>✅ n8n (Workflow Automation)</li>
+                </ul>
+            </div>
+            
+            <div class="card fade-in" style="animation-delay: 0.1s;">
+                <h3 style="font-size: 18px; font-weight: 600; color: var(--text-primary); margin-bottom: 16px;">
+                    🎨 Frontend Stack
+                </h3>
+                <ul style="list-style: none; padding: 0; color: var(--text-secondary); font-size: 14px; line-height: 2;">
+                    <li>✅ Modern Dark UI</li>
+                    <li>✅ Chart.js (Analytics)</li>
+                    <li>✅ Responsive Design</li>
+                    <li>✅ Real-time Updates</li>
+                </ul>
+            </div>
+            
+            <div class="card fade-in" style="animation-delay: 0.2s;">
+                <h3 style="font-size: 18px; font-weight: 600; color: var(--text-primary); margin-bottom: 16px;">
+                    🚀 Key Features
+                </h3>
+                <ul style="list-style: none; padding: 0; color: var(--text-secondary); font-size: 14px; line-height: 2;">
+                    <li>✅ Multi-Agent AI (3 Bots)</li>
+                    <li>✅ 100% FREE (No Costs)</li>
+                    <li>✅ 23s Generation Time</li>
+                    <li>✅ Production Ready</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Technical Highlights -->
+        <div class="card fade-in">
+            <div class="card-header">
+                <h3 class="card-title">💡 Technical Highlights</h3>
+            </div>
+            
+            <div class="grid grid-2" style="gap: 24px; padding: 24px;">
+                <div>
+                    <h4 style="color: var(--accent-blue); margin-bottom: 12px;">🤖 Multi-Agent Coordination</h4>
+                    <p style="color: var(--text-secondary); font-size: 14px; line-height: 1.8;">
+                        Unlike single-AI solutions, our system uses 3 specialized agents that work sequentially. 
+                        Each agent focuses on its expertise: analysis, strategy, or content creation. 
+                        This results in higher quality campaigns with better context awareness.
+                    </p>
+                </div>
+                
+                <div>
+                    <h4 style="color: var(--accent-green); margin-bottom: 12px;">⚡ Real-Time Processing</h4>
+                    <p style="color: var(--text-secondary); font-size: 14px; line-height: 1.8;">
+                        Complete campaign generation in under 30 seconds. Leverages Google Gemini's 
+                        1.5 Flash model for speed while maintaining quality. Parallel processing 
+                        where possible, sequential where context matters.
+                    </p>
+                </div>
+                
+                <div>
+                    <h4 style="color: var(--accent-purple); margin-bottom: 12px;">💰 Zero Cost Architecture</h4>
+                    <p style="color: var(--text-secondary); font-size: 14px; line-height: 1.8;">
+                        Built entirely on FREE services: Google Gemini (60 req/min free tier), 
+                        open-source Python stack, and optional n8n cloud free tier. 
+                        No hidden costs, no credit card required, truly free forever.
+                    </p>
+                </div>
+                
+                <div>
+                    <h4 style="color: var(--accent-orange); margin-bottom: 12px;">🎯 Production Ready</h4>
+                    <p style="color: var(--text-secondary); font-size: 14px; line-height: 1.8;">
+                        Complete with database models, user authentication, error handling, 
+                        and fallback responses. Not just a prototype - ready to deploy and scale 
+                        to thousands of users immediately.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

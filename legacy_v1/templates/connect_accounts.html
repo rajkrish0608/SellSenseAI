@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+{% extends "base.html" %}
+
+{% block title %}Connect Accounts - Agentic Sales AI{% endblock %}
+
+{% block extra_css %}
+<style>
+/* FORCE SIDEBAR FIX - INLINE OVERRIDE */
+.sidebar { background: #141929 !important; border-right: 1px solid #262d4d !important; }
+.sidebar-brand { color: #ffffff !important; }
+.sidebar a { color: #8b92b2 !important; text-decoration: none !important; }
+.sidebar a:link { color: #8b92b2 !important; }
+.sidebar a:visited { color: #8b92b2 !important; }
+.sidebar a:hover { color: #ffffff !important; }
+.sidebar a:active { color: #8b92b2 !important; }
+.nav-item { background: transparent !important; padding: 14px 16px !important; border-radius: 12px !important; position: relative !important; }
+.nav-item:hover { background: #1a1f37 !important; }
+.nav-item.active { color: #5b8def !important; background: #1a1f37 !important; }
+.nav-item.active::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 70%;
+    background: #5b8def;
+    border-radius: 0 4px 4px 0;
+}
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="page-wrapper">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2 class="sidebar-brand">🤖 Agentic AI</h2>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <a href="/dashboard" class="nav-item">
+                <span class="nav-icon">📊</span>
+                <span>Dashboard</span>
+            </a>
+            
+            <a href="/generate-campaign" class="nav-item">
+                <span class="nav-icon">🎯</span>
+                <span>Generate Campaign</span>
+            </a>
+            
+            <a href="/sales/update" class="nav-item">
+                <span class="nav-icon">💰</span>
+                <span>Sales Update</span>
+            </a>
+            
+            <a href="/analytics" class="nav-item">
+                <span class="nav-icon">📈</span>
+                <span>Analytics</span>
+            </a>
+            
+            <a href="/connect-accounts" class="nav-item active">
+                <span class="nav-icon">🔗</span>
+                <span>Social Accounts</span>
+            </a>
+            
+            <div class="sidebar-divider"></div>
+            
+            <a href="/demo" class="nav-item">
+                <span class="nav-icon">🎬</span>
+                <span>Live Demo</span>
+            </a>
+            
+            <a href="/logout" class="nav-item">
+                <span class="nav-icon">🚪</span>
+                <span>Logout</span>
+            </a>
+        </nav>
+    </aside>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="page-header">
+            <div>
+                <h1 class="page-title">🔗 Social Media Accounts</h1>
+                <p class="page-subtitle">Connect your accounts to auto-post campaigns</p>
+            </div>
+        </div>
+        
+        <div class="grid grid-3">
+            <!-- Instagram Card -->
+            <div class="card fade-in">
+                <div style="text-align: center; padding: 40px 20px;">
+                    <div style="font-size: 64px; margin-bottom: 20px;">📸</div>
+                    <h3 style="font-size: 20px; font-weight: 600; color: var(--text-primary); margin-bottom: 8px;">Instagram</h3>
+                    <p style="font-size: 14px; color: var(--text-secondary); margin-bottom: 24px;">Connect your Instagram Business account</p>
+                    
+                    <span class="badge badge-warning">Coming Soon</span>
+                    
+                    <p style="font-size: 13px; color: var(--text-muted); margin-top: 20px; line-height: 1.6;">
+                        Auto-post campaigns to Instagram feed and stories
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Facebook Card -->
+            <div class="card fade-in" style="animation-delay: 0.1s;">
+                <div style="text-align: center; padding: 40px 20px;">
+                    <div style="font-size: 64px; margin-bottom: 20px;">📘</div>
+                    <h3 style="font-size: 20px; font-weight: 600; color: var(--text-primary); margin-bottom: 8px;">Facebook</h3>
+                    <p style="font-size: 14px; color: var(--text-secondary); margin-bottom: 24px;">Connect your Facebook Business Page</p>
+                    
+                    <span class="badge badge-warning">Coming Soon</span>
+                    
+                    <p style="font-size: 13px; color: var(--text-muted); margin-top: 20px; line-height: 1.6;">
+                        Auto-post to Facebook page with scheduling
+                    </p>
+                </div>
+            </div>
+            
+            <!-- WhatsApp Card -->
+            <div class="card fade-in" style="animation-delay: 0.2s;">
+                <div style="text-align: center; padding: 40px 20px;">
+                    <div style="font-size: 64px; margin-bottom: 20px;">💬</div>
+                    <h3 style="font-size: 20px; font-weight: 600; color: var(--text-primary); margin-bottom: 8px;">WhatsApp</h3>
+                    <p style="font-size: 14px; color: var(--text-secondary); margin-bottom: 24px;">Connect WhatsApp Business API</p>
+                    
+                    <span class="badge badge-warning">Coming Soon</span>
+                    
+                    <p style="font-size: 13px; color: var(--text-muted); margin-top: 20px; line-height: 1.6;">
+                        Send broadcast messages to customers
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Integration Guide -->
+        <div class="card fade-in" style="margin-top: 32px;">
+            <div class="card-header">
+                <h3 class="card-title">📚 How to Connect</h3>
+            </div>
+            
+            <div style="padding: 24px;">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 24px;">
+                    <div>
+                        <h4 style="color: var(--accent-blue); margin-bottom: 12px; font-size: 16px;">1️⃣ Get API Access</h4>
+                        <p style="color: var(--text-secondary); font-size: 14px; line-height: 1.8;">
+                            Create a developer account on Facebook/Meta and get API credentials
+                        </p>
+                    </div>
+                    
+                    <div>
+                        <h4 style="color: var(--accent-green); margin-bottom: 12px; font-size: 16px;">2️⃣ Enter Credentials</h4>
+                        <p style="color: var(--text-secondary); font-size: 14px; line-height: 1.8;">
+                            Add your access tokens and account IDs in the connection form
+                        </p>
+                    </div>
+                    
+                    <div>
+                        <h4 style="color: var(--accent-purple); margin-bottom: 12px; font-size: 16px;">3️⃣ Auto-Post</h4>
+                        <p style="color: var(--text-secondary); font-size: 14px; line-height: 1.8;">
+                            Your campaigns will automatically post to connected accounts
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+{% endblock %}

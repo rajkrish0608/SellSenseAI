@@ -1,0 +1,228 @@
+{% extends "base.html" %}
+
+{% block title %}Login - Agentic Sales AI{% endblock %}
+
+{% block body %}
+<div class="auth-wrapper">
+    <div class="auth-container">
+        <!-- Left Side - Branding -->
+        <div class="auth-left">
+            <div class="auth-brand">
+                <h1 class="brand-title">🤖 Agentic Sales AI</h1>
+                <p class="brand-subtitle">Multi-Agent AI Marketing Platform</p>
+            </div>
+            
+            <div class="auth-features">
+                <div class="feature-item">
+                    <span class="feature-icon">🔍</span>
+                    <div>
+                        <h3>AI Sales Analyst</h3>
+                        <p>Analyzes your sales data automatically</p>
+                    </div>
+                </div>
+                
+                <div class="feature-item">
+                    <span class="feature-icon">🧠</span>
+                    <div>
+                        <h3>Smart Strategy Bot</h3>
+                        <p>Creates 7-day campaign plans</p>
+                    </div>
+                </div>
+                
+                <div class="feature-item">
+                    <span class="feature-icon">🎨</span>
+                    <div>
+                        <h3>Content Generator</h3>
+                        <p>Generates posts & posters instantly</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Right Side - Login Form -->
+        <div class="auth-right">
+            <div class="auth-form-container">
+                <h2 class="auth-title">Welcome Back</h2>
+                <p class="auth-subtitle">Login to your account</p>
+                
+                <form method="POST" class="auth-form">
+                    <div class="form-group">
+                        <label class="form-label">Email Address</label>
+                        <input type="email" name="email" class="form-input" placeholder="you@example.com" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Password</label>
+                        <input type="password" name="password" class="form-input" placeholder="••••••••" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="remember">
+                            <span>Remember me</span>
+                        </label>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary btn-block">
+                        Login to Dashboard
+                    </button>
+                </form>
+                
+                <div class="auth-footer">
+                    <p>Don't have an account? <a href="{{ url_for('signup') }}" class="auth-link">Sign up</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .auth-wrapper {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--bg-primary);
+        padding: 20px;
+    }
+    
+    .auth-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        max-width: 1100px;
+        width: 100%;
+        background: var(--bg-secondary);
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow: var(--shadow-lg);
+    }
+    
+    .auth-left {
+        padding: 60px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+    
+    .brand-title {
+        font-size: 36px;
+        font-weight: 800;
+        color: white;
+        margin-bottom: 12px;
+    }
+    
+    .brand-subtitle {
+        font-size: 18px;
+        color: rgba(255, 255, 255, 0.9);
+        margin-bottom: 48px;
+    }
+    
+    .auth-features {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+    }
+    
+    .feature-item {
+        display: flex;
+        gap: 16px;
+        align-items: start;
+    }
+    
+    .feature-icon {
+        font-size: 32px;
+    }
+    
+    .feature-item h3 {
+        font-size: 18px;
+        font-weight: 600;
+        color: white;
+        margin-bottom: 4px;
+    }
+    
+    .feature-item p {
+        font-size: 14px;
+        color: rgba(255, 255, 255, 0.8);
+    }
+    
+    .auth-right {
+        padding: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .auth-form-container {
+        width: 100%;
+        max-width: 400px;
+    }
+    
+    .auth-title {
+        font-size: 32px;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 8px;
+    }
+    
+    .auth-subtitle {
+        font-size: 16px;
+        color: var(--text-secondary);
+        margin-bottom: 32px;
+    }
+    
+    .auth-form {
+        margin-bottom: 24px;
+    }
+    
+    .btn-block {
+        width: 100%;
+        justify-content: center;
+        margin-top: 24px;
+    }
+    
+    .checkbox-label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--text-secondary);
+        cursor: pointer;
+    }
+    
+    .checkbox-label input {
+        width: 18px;
+        height: 18px;
+        cursor: pointer;
+    }
+    
+    .auth-footer {
+        text-align: center;
+        padding-top: 24px;
+        border-top: 1px solid var(--border-color);
+    }
+    
+    .auth-footer p {
+        color: var(--text-secondary);
+    }
+    
+    .auth-link {
+        color: var(--accent-blue);
+        text-decoration: none;
+        font-weight: 500;
+    }
+    
+    .auth-link:hover {
+        text-decoration: underline;
+    }
+    
+    @media (max-width: 968px) {
+        .auth-container {
+            grid-template-columns: 1fr;
+        }
+        
+        .auth-left {
+            display: none;
+        }
+    }
+</style>
+{% endblock %}

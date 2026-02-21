@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+{% extends "base.html" %}
+
+{% block title %}Live AI Demo - Agentic Sales AI{% endblock %}
+
+{% block body %}
+<div style="background: var(--bg-primary); min-height: 100vh; padding: 40px;">
+    <div style="max-width: 1600px; margin: 0 auto;">
+        <!-- Header -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px;">
+            <div>
+                <h1 style="font-size: 36px; font-weight: 700; color: var(--text-primary); margin-bottom: 8px;">
+                    🎬 Live AI Agent Demo
+                </h1>
+                <p style="font-size: 18px; color: var(--text-secondary);">
+                    Watch 3 AI agents collaborate in real-time
+                </p>
+            </div>
+            <a href="{{ url_for('demo_hub') }}" class="btn btn-secondary">← Back to Demo Hub</a>
+        </div>
+        
+        <!-- Control Panel -->
+        <div class="card fade-in" style="margin-bottom: 32px;">
+            <div class="card-header">
+                <h3 class="card-title">🎮 Control Panel</h3>
+            </div>
+            
+            <div style="padding: 24px;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr 200px; gap: 16px; align-items: end;">
+                    <div class="form-group">
+                        <label class="form-label">Business Type</label>
+                        <select id="businessType" class="form-select">
+                            <option value="jewelry">💎 Jewelry Store</option>
+                            <option value="fashion">👗 Fashion Boutique</option>
+                            <option value="electronics">📱 Electronics Shop</option>
+                            <option value="food">🍕 Food Business</option>
+                            <option value="fitness">💪 Fitness Studio</option>
+                            <option value="beauty">💄 Beauty Salon</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Campaign Goal</label>
+                        <select id="campaignGoal" class="form-select">
+                            <option value="flash_sale">⚡ Flash Sale</option>
+                            <option value="product_launch">🚀 Product Launch</option>
+                            <option value="brand_awareness">📢 Brand Awareness</option>
+                            <option value="engagement">💬 Engagement Boost</option>
+                            <option value="seasonal">🎄 Seasonal Campaign</option>
+                        </select>
+                    </div>
+                    
+                    <button id="startBtn" class="btn btn-primary" onclick="startDemo()" style="height: 48px;">
+                        🚀 Start AI Agent System
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- AI Agents -->
+        <div class="grid grid-3" style="gap: 24px; margin-bottom: 32px;">
+            <!-- Agent 1: Analyst -->
+            <div class="card agent-card fade-in" id="agent1-card">
+                <div style="text-align: center;">
+                    <div class="agent-icon" style="font-size: 64px; margin-bottom: 16px;">🔍</div>
+                    <h3 style="font-size: 20px; font-weight: 700; color: var(--text-primary); margin-bottom: 8px;">
+                        Analyst Bot
+                    </h3>
+                    <p style="font-size: 14px; color: var(--text-secondary); margin-bottom: 20px;">
+                        Analyzes sales data & trends
+                    </p>
+                    
+                    <div class="agent-status" id="agent1-status">
+                        <span class="status-badge" style="background: var(--bg-secondary); padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: 500;">
+                            ⏸️ Ready
+                        </span>
+                    </div>
+                    
+                    <div class="progress-bar" id="agent1-progress" style="display: none; margin-top: 16px;">
+                        <div class="progress-fill"></div>
+                    </div>
+                    
+                    <div id="agent1-output" style="margin-top: 16px; font-size: 13px; color: var(--text-secondary); min-height: 40px;"></div>
+                </div>
+            </div>
+            
+            <!-- Agent 2: Strategy -->
+            <div class="card agent-card fade-in" id="agent2-card" style="animation-delay: 0.1s;">
+                <div style="text-align: center;">
+                    <div class="agent-icon" style="font-size: 64px; margin-bottom: 16px;">🧠</div>
+                    <h3 style="font-size: 20px; font-weight: 700; color: var(--text-primary); margin-bottom: 8px;">
+                        Strategy Bot
+                    </h3>
+                    <p style="font-size: 14px; color: var(--text-secondary); margin-bottom: 20px;">
+                        Creates 7-day campaign plan
+                    </p>
+                    
+                    <div class="agent-status" id="agent2-status">
+                        <span class="status-badge" style="background: var(--bg-secondary); padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: 500;">
+                            ⏸️ Ready
+                        </span>
+                    </div>
+                    
+                    <div class="progress-bar" id="agent2-progress" style="display: none; margin-top: 16px;">
+                        <div class="progress-fill"></div>
+                    </div>
+                    
+                    <div id="agent2-output" style="margin-top: 16px; font-size: 13px; color: var(--text-secondary); min-height: 40px;"></div>
+                </div>
+            </div>
+            
+            <!-- Agent 3: Content -->
+            <div class="card agent-card fade-in" id="agent3-card" style="animation-delay: 0.2s;">
+                <div style="text-align: center;">
+                    <div class="agent-icon" style="font-size: 64px; margin-bottom: 16px;">🎨</div>
+                    <h3 style="font-size: 20px; font-weight: 700; color: var(--text-primary); margin-bottom: 8px;">
+                        Content Bot
+                    </h3>
+                    <p style="font-size: 14px; color: var(--text-secondary); margin-bottom: 20px;">
+                        Generates posts & images
+                    </p>
+                    
+                    <div class="agent-status" id="agent3-status">
+                        <span class="status-badge" style="background: var(--bg-secondary); padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: 500;">
+                            ⏸️ Ready
+                        </span>
+                    </div>
+                    
+                    <div class="progress-bar" id="agent3-progress" style="display: none; margin-top: 16px;">
+                        <div class="progress-fill"></div>
+                    </div>
+                    
+                    <div id="agent3-output" style="margin-top: 16px; font-size: 13px; color: var(--text-secondary); min-height: 40px;"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Results -->
+        <div id="results" style="display: none;">
+            <div class="card fade-in">
+                <div class="card-header">
+                    <h3 class="card-title">✨ Generated Campaign</h3>
+                    <div>
+                        <span id="processingTime" class="badge badge-success"></span>
+                    </div>
+                </div>
+                
+                <div id="campaignResults" style="padding: 24px;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .agent-card {
+        border: 2px solid var(--border-color);
+        transition: all 0.3s ease;
+    }
+    
+    .agent-card.active {
+        border-color: var(--accent-blue);
+        box-shadow: 0 0 20px rgba(91, 141, 239, 0.3);
+    }
+    
+    .agent-card.complete {
+        border-color: var(--accent-green);
+    }
+    
+    .progress-bar {
+        width: 100%;
+        height: 6px;
+        background: var(--bg-secondary);
+        border-radius: 10px;
+        overflow: hidden;
+    }
+    
+    .progress-fill {
+        height: 100%;
+        background: var(--gradient-blue);
+        width: 0%;
+        animation: progressAnim 3s ease-in-out;
+    }
+    
+    @keyframes progressAnim {
+        from { width: 0%; }
+        to { width: 100%; }
+    }
+    
+    .status-badge {
+        display: inline-block;
+    }
+</style>
+
+<script>
+async function startDemo() {
+    const business = document.getElementById('businessType').value;
+    const goal = document.getElementById('campaignGoal').value;
+    const startBtn = document.getElementById('startBtn');
+    
+    startBtn.disabled = true;
+    startBtn.textContent = '⏳ Generating...';
+    
+    const startTime = Date.now();
+    
+    try {
+        // Step 1: Analyst Bot
+        await runAgent(1, 'Analyzing sales data...', async () => {
+            const response = await fetch('/api/analyst/analyze', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    business_profile: {
+                        business_name: `${business} Business`,
+                        niche: business,
+                        target_audience: 'General customers',
+                        brand_voice: 'Friendly'
+                    },
+                    sales_data: generateMockSales(business)
+                })
+            });
+            const data = await response.json();
+            document.getElementById('agent1-output').textContent = `Focus: ${data.recommended_focus.product}`;
+            return data;
+        });
+        
+        // Step 2: Strategy Bot
+        const insights = {}; // Use data from step 1
+        await runAgent(2, 'Creating 7-day strategy...', async () => {
+            const response = await fetch('/api/strategy/create', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    business_profile: { business_name: `${business} Business` },
+                    campaign_goal: goal,
+                    insights: insights
+                })
+            });
+            const data = await response.json();
+            document.getElementById('agent2-output').textContent = `Campaign: ${data.campaign_name}`;
+            return data;
+        });
+        
+        // Step 3: Content Bot
+        await runAgent(3, 'Generating content...', async () => {
+            const response = await fetch('/api/content/generate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    business_profile: { business_name: `${business} Business`, brand_voice: 'Friendly' },
+                    strategy: { daily_plan: Array(7).fill().map((_, i) => ({
+                        day: i + 1,
+                        theme: `Day ${i + 1} Theme`,
+                        key_message: 'Special offer!',
+                        tone: 'friendly',
+                        call_to_action: 'Shop now!'
+                    })) }
+                })
+            });
+            const data = await response.json();
+            document.getElementById('agent3-output').textContent = `${data.total_days} days created`;
+            return data;
+        });
+        
+        // Show results
+        const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
+        document.getElementById('processingTime').textContent = `⏱️ Generated in ${elapsed}s`;
+        document.getElementById('results').style.display = 'block';
+        document.getElementById('campaignResults').innerHTML = `
+            <div style="text-align: center; padding: 40px;">
+                <div style="font-size: 72px; margin-bottom: 16px;">✅</div>
+                <h2 style="font-size: 28px; font-weight: 700; color: var(--text-primary); margin-bottom: 12px;">
+                    Campaign Generated Successfully!
+                </h2>
+                <p style="font-size: 16px; color: var(--text-secondary); margin-bottom: 24px;">
+                    7-day ${goal} campaign for ${business} business ready to deploy
+                </p>
+                <div style="display: flex; gap: 16px; justify-content: center;">
+                    <span class="badge badge-success">100% FREE</span>
+                    <span class="badge badge-info">Google Gemini Powered</span>
+                    <span class="badge badge-success">${elapsed}s Processing</span>
+                </div>
+            </div>
+        `;
+        
+        document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+        
+    } catch (error) {
+        console.error('Error:', error);
+        alert('❌ Demo error. Please try again.');
+    } finally {
+        startBtn.disabled = false;
+        startBtn.textContent = '🚀 Start AI Agent System';
+    }
+}
+
+async function runAgent(num, message, apiCall) {
+    const card = document.getElementById(`agent${num}-card`);
+    const status = document.getElementById(`agent${num}-status`);
+    const progress = document.getElementById(`agent${num}-progress`);
+    
+    // Activate
+    card.classList.add('active');
+    status.innerHTML = `<span class="status-badge" style="background: var(--accent-blue); color: white; padding: 8px 16px; border-radius: 20px;">⚡ ${message}</span>`;
+    progress.style.display = 'block';
+    
+    // Run API call
+    const result = await apiCall();
+    
+    // Complete
+    await new Promise(resolve => setTimeout(resolve, 500));
+    card.classList.remove('active');
+    card.classList.add('complete');
+    status.innerHTML = `<span class="status-badge" style="background: var(--accent-green); color: white; padding: 8px 16px; border-radius: 20px;">✅ Complete</span>`;
+    
+    return result;
+}
+
+function generateMockSales(business) {
+    return [
+        { week: '2026-02-10', revenue: 35000, items_sold: 45 },
+        { week: '2026-02-03', revenue: 28000, items_sold: 38 }
+    ];
+}
+</script>
+{% endblock %}

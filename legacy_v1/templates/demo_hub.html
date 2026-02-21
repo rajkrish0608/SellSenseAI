@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+{% extends "base.html" %}
+
+{% block title %}Demo Hub - Agentic Sales AI{% endblock %}
+
+{% block body %}
+<div style="background: var(--bg-primary); min-height: 100vh;">
+    <!-- Header -->
+    <header style="background: var(--bg-secondary); border-bottom: 1px solid var(--border-color); padding: 20px 40px;">
+        <div style="max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 24px; font-weight: 700; color: var(--text-primary);">
+                🤖 Agentic Sales AI - Demo Hub
+            </h1>
+            <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">← Back to Dashboard</a>
+        </div>
+    </header>
+    
+    <!-- Main Content -->
+    <main style="max-width: 1400px; margin: 0 auto; padding: 60px 40px;">
+        <!-- Hero Section -->
+        <div style="text-align: center; margin-bottom: 60px;" class="fade-in">
+            <h1 style="font-size: 48px; font-weight: 800; background: var(--gradient-blue); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 16px;">
+                Hackathon Demo Center
+            </h1>
+            <p style="font-size: 20px; color: var(--text-secondary); max-width: 800px; margin: 0 auto;">
+                Multi-Agent AI System for Social Media Marketing - Powered by Google Gemini (100% FREE)
+            </p>
+        </div>
+        
+        <!-- Quick Access Cards -->
+        <div class="grid grid-2" style="gap: 24px; margin-bottom: 60px;">
+            <!-- Live Demo Card -->
+            <a href="{{ url_for('live_demo') }}" class="demo-card" style="text-decoration: none;">
+                <div style="font-size: 64px; margin-bottom: 16px;">🎬</div>
+                <h2 style="font-size: 28px; font-weight: 700; color: var(--text-primary); margin-bottom: 12px;">
+                    Live AI Demo
+                </h2>
+                <p style="font-size: 16px; color: var(--text-secondary); margin-bottom: 24px;">
+                    Watch 3 AI agents generate a complete 7-day campaign in real-time
+                </p>
+                <div style="display: flex; align-items: center; gap: 8px; color: var(--accent-blue); font-weight: 600;">
+                    <span>Start Demo</span>
+                    <span>→</span>
+                </div>
+            </a>
+            
+            <!-- Architecture Card -->
+            <a href="{{ url_for('architecture') }}" class="demo-card" style="text-decoration: none;">
+                <div style="font-size: 64px; margin-bottom: 16px;">🏗️</div>
+                <h2 style="font-size: 28px; font-weight: 700; color: var(--text-primary); margin-bottom: 12px;">
+                    System Architecture
+                </h2>
+                <p style="font-size: 16px; color: var(--text-secondary); margin-bottom: 24px;">
+                    Explore the technical architecture and multi-agent workflow
+                </p>
+                <div style="display: flex; align-items: center; gap: 8px; color: var(--accent-blue); font-weight: 600;">
+                    <span>View Architecture</span>
+                    <span>→</span>
+                </div>
+            </a>
+            
+            <!-- Main Dashboard Card -->
+            <a href="{{ url_for('dashboard') }}" class="demo-card" style="text-decoration: none;">
+                <div style="font-size: 64px; margin-bottom: 16px;">📊</div>
+                <h2 style="font-size: 28px; font-weight: 700; color: var(--text-primary); margin-bottom: 12px;">
+                    Main Dashboard
+                </h2>
+                <p style="font-size: 16px; color: var(--text-secondary); margin-bottom: 24px;">
+                    Access the full application with analytics and campaign tools
+                </p>
+                <div style="display: flex; align-items: center; gap: 8px; color: var(--accent-blue); font-weight: 600;">
+                    <span>Open Dashboard</span>
+                    <span>→</span>
+                </div>
+            </a>
+            
+            <!-- Generate Campaign Card -->
+            <a href="{{ url_for('generate_campaign_page') }}" class="demo-card" style="text-decoration: none;">
+                <div style="font-size: 64px; margin-bottom: 16px;">🚀</div>
+                <h2 style="font-size: 28px; font-weight: 700; color: var(--text-primary); margin-bottom: 12px;">
+                    Generate Campaign
+                </h2>
+                <p style="font-size: 16px; color: var(--text-secondary); margin-bottom: 24px;">
+                    Create your own AI-powered marketing campaign right now
+                </p>
+                <div style="display: flex; align-items: center; gap: 8px; color: var(--accent-blue); font-weight: 600;">
+                    <span>Create Campaign</span>
+                    <span>→</span>
+                </div>
+            </a>
+        </div>
+        
+        <!-- System Stats -->
+        <div class="card fade-in" style="margin-bottom: 60px;">
+            <div class="card-header">
+                <h3 class="card-title">📊 System Statistics</h3>
+            </div>
+            
+            <div class="grid grid-4" style="gap: 24px; padding: 20px;">
+                <div style="text-align: center;">
+                    <div style="font-size: 36px; font-weight: 700; color: var(--accent-blue);" id="stat-campaigns">0</div>
+                    <div style="font-size: 14px; color: var(--text-secondary); margin-top: 8px;">Campaigns Generated</div>
+                </div>
+                
+                <div style="text-align: center;">
+                    <div style="font-size: 36px; font-weight: 700; color: var(--accent-green);" id="stat-content">0</div>
+                    <div style="font-size: 14px; color: var(--text-secondary); margin-top: 8px;">Content Pieces Created</div>
+                </div>
+                
+                <div style="text-align: center;">
+                    <div style="font-size: 36px; font-weight: 700; color: var(--accent-purple);">23s</div>
+                    <div style="font-size: 14px; color: var(--text-secondary); margin-top: 8px;">Avg Processing Time</div>
+                </div>
+                
+                <div style="text-align: center;">
+                    <div style="font-size: 36px; font-weight: 700; color: var(--accent-orange);">₹0</div>
+                    <div style="font-size: 14px; color: var(--text-secondary); margin-top: 8px;">Cost (100% FREE)</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Presentation Guide -->
+        <div class="card fade-in">
+            <div class="card-header">
+                <h3 class="card-title">🎯 Hackathon Presentation Guide</h3>
+            </div>
+            
+            <div style="padding: 20px;">
+                <div style="background: var(--bg-secondary); padding: 24px; border-radius: 12px; margin-bottom: 24px;">
+                    <h4 style="color: var(--text-primary); margin-bottom: 16px; font-size: 18px;">⏱️ 3-Minute Demo Flow</h4>
+                    
+                    <div style="display: grid; gap: 16px;">
+                        <div style="display: flex; gap: 16px; align-items: start;">
+                            <div style="background: var(--accent-blue); color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-weight: 600;">1</div>
+                            <div>
+                                <strong style="color: var(--text-primary);">Problem (30s)</strong>
+                                <p style="color: var(--text-secondary); margin-top: 4px; font-size: 14px;">63M Indian SMEs struggle with marketing - ₹50k/month or 10hrs/week wasted</p>
+                            </div>
+                        </div>
+                        
+                        <div style="display: flex; gap: 16px; align-items: start;">
+                            <div style="background: var(--accent-blue); color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-weight: 600;">2</div>
+                            <div>
+                                <strong style="color: var(--text-primary);">Solution (45s)</strong>
+                                <p style="color: var(--text-secondary); margin-top: 4px; font-size: 14px;">3 AI Agents (Analyst → Strategy → Content) - 100% FREE using Google Gemini</p>
+                            </div>
+                        </div>
+                        
+                        <div style="display: flex; gap: 16px; align-items: start;">
+                            <div style="background: var(--accent-green); color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-weight: 600;">3</div>
+                            <div>
+                                <strong style="color: var(--text-primary);">Live Demo (90s)</strong>
+                                <p style="color: var(--text-secondary); margin-top: 4px; font-size: 14px;">Click "Live AI Demo" - watch agents work - show 7-day campaign output</p>
+                            </div>
+                        </div>
+                        
+                        <div style="display: flex; gap: 16px; align-items: start;">
+                            <div style="background: var(--accent-blue); color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-weight: 600;">4</div>
+                            <div>
+                                <strong style="color: var(--text-primary);">Technical Innovation (30s)</strong>
+                                <p style="color: var(--text-secondary); margin-top: 4px; font-size: 14px;">Show architecture diagram - explain multi-agent coordination</p>
+                            </div>
+                        </div>
+                        
+                        <div style="display: flex; gap: 16px; align-items: start;">
+                            <div style="background: var(--accent-blue); color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-weight: 600;">5</div>
+                            <div>
+                                <strong style="color: var(--text-primary);">Impact (15s)</strong>
+                                <p style="color: var(--text-secondary); margin-top: 4px; font-size: 14px;">63M businesses × ₹50k saved = ₹3.15 Trillion annual impact</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Key Talking Points -->
+                <h4 style="color: var(--text-primary); margin-bottom: 16px; font-size: 18px;">💡 Key Talking Points</h4>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
+                    <div style="background: var(--bg-secondary); padding: 16px; border-radius: 8px;">
+                        <div style="color: var(--accent-green); font-weight: 600; margin-bottom: 8px;">✅ 100% FREE Forever</div>
+                        <p style="color: var(--text-secondary); font-size: 14px;">Google Gemini API - 60 requests/min free tier</p>
+                    </div>
+                    
+                    <div style="background: var(--bg-secondary); padding: 16px; border-radius: 8px;">
+                        <div style="color: var(--accent-blue); font-weight: 600; margin-bottom: 8px;">⚡ 23 Second Generation</div>
+                        <p style="color: var(--text-secondary); font-size: 14px;">Complete 7-day campaign in under 30 seconds</p>
+                    </div>
+                    
+                    <div style="background: var(--bg-secondary); padding: 16px; border-radius: 8px;">
+                        <div style="color: var(--accent-purple); font-weight: 600; margin-bottom: 8px;">🤖 3 Specialized Agents</div>
+                        <p style="color: var(--text-secondary); font-size: 14px;">Not just one AI - coordinated multi-agent system</p>
+                    </div>
+                    
+                    <div style="background: var(--bg-secondary); padding: 16px; border-radius: 8px;">
+                        <div style="color: var(--accent-orange); font-weight: 600; margin-bottom: 8px;">🎯 63M Target Market</div>
+                        <p style="color: var(--text-secondary); font-size: 14px;">Every Indian SME needs this solution</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<style>
+    .demo-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 20px;
+        padding: 40px;
+        transition: all 0.3s ease;
+        display: block;
+    }
+    
+    .demo-card:hover {
+        background: var(--bg-card-hover);
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-lg);
+        border-color: var(--accent-blue);
+    }
+</style>
+
+<script>
+// Load stats
+async function loadStats() {
+    try {
+        const response = await fetch('/api/demo/metrics');
+        const data = await response.json();
+        
+        document.getElementById('stat-campaigns').textContent = data.total_campaigns;
+        document.getElementById('stat-content').textContent = data.total_content_pieces;
+    } catch (error) {
+        console.error('Error loading stats:', error);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', loadStats);
+</script>
+{% endblock %}

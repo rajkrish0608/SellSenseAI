@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Agentic Sales AI{% endblock %}</title>
+    
+    <!-- Modern Dark CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/modern-dark.css') }}">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-messages">
+                {% for category, message in messages %}
+                    <div class="flash-message flash-{{ category }} fade-in">
+                        <span>{{ message }}</span>
+                        <button onclick="this.parentElement.remove()" class="flash-close">×</button>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+    
+    {% block body %}{% endblock %}
+    
+    {% block extra_js %}{% endblock %}
+    
+    <style>
+        /* Flash Messages */
+        .flash-messages {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .flash-message {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px 20px;
+            min-width: 300px;
+            max-width: 400px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .flash-success {
+            border-left: 4px solid var(--accent-green);
+        }
+        
+        .flash-error {
+            border-left: 4px solid var(--accent-red);
+        }
+        
+        .flash-info {
+            border-left: 4px solid var(--accent-blue);
+        }
+        
+        .flash-close {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 24px;
+            cursor: pointer;
+            padding: 0;
+            margin-left: 16px;
+        }
+        
+        .flash-close:hover {
+            color: var(--text-primary);
+        }
+    </style>
+</body>
+</html>

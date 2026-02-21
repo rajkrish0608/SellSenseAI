@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+{% extends "base.html" %}
+
+{% block title %}Analytics - Agentic Sales AI{% endblock %}
+
+{% block extra_css %}
+<style>
+/* FORCE SIDEBAR FIX - INLINE OVERRIDE */
+.sidebar { background: #141929 !important; border-right: 1px solid #262d4d !important; }
+.sidebar-brand { color: #ffffff !important; }
+.sidebar a { color: #8b92b2 !important; text-decoration: none !important; }
+.sidebar a:link { color: #8b92b2 !important; }
+.sidebar a:visited { color: #8b92b2 !important; }
+.sidebar a:hover { color: #ffffff !important; }
+.sidebar a:active { color: #8b92b2 !important; }
+.nav-item { background: transparent !important; padding: 14px 16px !important; border-radius: 12px !important; position: relative !important; }
+.nav-item:hover { background: #1a1f37 !important; }
+.nav-item.active { color: #5b8def !important; background: #1a1f37 !important; }
+.nav-item.active::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 70%;
+    background: #5b8def;
+    border-radius: 0 4px 4px 0;
+}
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="page-wrapper">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2 class="sidebar-brand">🤖 Agentic AI</h2>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <a href="/dashboard" class="nav-item">
+                <span class="nav-icon">📊</span>
+                <span>Dashboard</span>
+            </a>
+            
+            <a href="/generate-campaign" class="nav-item">
+                <span class="nav-icon">🎯</span>
+                <span>Generate Campaign</span>
+            </a>
+            
+            <a href="/sales/update" class="nav-item">
+                <span class="nav-icon">💰</span>
+                <span>Sales Update</span>
+            </a>
+            
+            <a href="/analytics" class="nav-item active">
+                <span class="nav-icon">📈</span>
+                <span>Analytics</span>
+            </a>
+            
+            <a href="/connect-accounts" class="nav-item">
+                <span class="nav-icon">🔗</span>
+                <span>Social Accounts</span>
+            </a>
+            
+            <div class="sidebar-divider"></div>
+            
+            <a href="/demo" class="nav-item">
+                <span class="nav-icon">🎬</span>
+                <span>Live Demo</span>
+            </a>
+            
+            <a href="/logout" class="nav-item">
+                <span class="nav-icon">🚪</span>
+                <span>Logout</span>
+            </a>
+        </nav>
+    </aside>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="page-header">
+            <div>
+                <h1 class="page-title">📈 Analytics Dashboard</h1>
+                <p class="page-subtitle">Track your social media performance</p>
+            </div>
+        </div>
+        
+        <!-- Stats -->
+        <div class="grid grid-3 mb-4">
+            <div class="stat-card fade-in">
+                <p class="stat-label">Total Reach</p>
+                <h3 class="stat-value" id="totalReach">0</h3>
+                <span class="badge badge-success">Last 30 days</span>
+            </div>
+            
+            <div class="stat-card fade-in" style="animation-delay: 0.1s;">
+                <p class="stat-label">Posts Published</p>
+                <h3 class="stat-value" id="totalPosts">0</h3>
+                <span class="badge badge-info">All platforms</span>
+            </div>
+            
+            <div class="stat-card fade-in" style="animation-delay: 0.2s;">
+                <p class="stat-label">Avg Engagement</p>
+                <h3 class="stat-value" id="avgEngagement">0%</h3>
+                <span class="stat-change positive">↑ 12.5%</span>
+            </div>
+        </div>
+        
+        <!-- Top Posts -->
+        <div class="card fade-in">
+            <div class="card-header">
+                <h3 class="card-title">🏆 Top Performing Posts</h3>
+            </div>
+            
+            <div id="topPosts" style="padding: 20px;">
+                <p class="text-muted">
+                    No posts yet. Connect your social accounts and start posting!
+                </p>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script>
+// Load analytics
+async function loadAnalytics() {
+    try {
+        const response = await fetch('/api/analytics/dashboard');
+        const data = await response.json();
+        
+        document.getElementById('totalReach').textContent = (data.total_reach || 0).toLocaleString();
+        document.getElementById('totalPosts').textContent = data.total_posts || 0;
+        document.getElementById('avgEngagement').textContent = (data.avg_engagement_rate || 0) + '%';
+        
+        if (data.top_posts && data.top_posts.length > 0) {
+            const html = data.top_posts.map(post => `
+                <div style="padding: 16px; border-bottom: 1px solid var(--border-color);">
+                    <div style="display: flex; justify-content: space-between; align-items: start;">
+                        <div style="flex: 1;">
+                            <p style="color: var(--text-primary); margin-bottom: 8px;">${post.caption || 'Post'}</p>
+                            <div style="display: flex; gap: 16px; font-size: 13px; color: var(--text-secondary);">
+                                <span>❤️ ${post.likes || 0}</span>
+                                <span>💬 ${post.comments || 0}</span>
+                                <span>📊 ${post.engagement_rate || 0}%</span>
+                            </div>
+                        </div>
+                        <span class="badge badge-info">${post.platform || 'Social'}</span>
+                    </div>
+                </div>
+            `).join('');
+            
+            document.getElementById('topPosts').innerHTML = html;
+        }
+    } catch (error) {
+        console.error('Error loading analytics:', error);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', loadAnalytics);
+</script>
+{% endblock %}

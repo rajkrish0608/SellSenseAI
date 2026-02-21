@@ -1,0 +1,310 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Agentic Sales AI{% endblock %}
+
+{% block body %}
+<div class="page-wrapper">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+    <div class="sidebar-header">
+        <h2 class="sidebar-brand">🤖 Agentic AI</h2>
+    </div>
+    
+    <nav class="sidebar-nav">
+        <a href="{{ url_for('dashboard') }}" class="nav-item {% if request.endpoint == 'dashboard' %}active{% endif %}">
+            <span class="nav-icon">📊</span>
+            <span>Dashboard</span>
+        </a>
+        
+        <a href="{{ url_for('generate_campaign_page') }}" class="nav-item {% if request.endpoint == 'generate_campaign_page' %}active{% endif %}">
+            <span class="nav-icon">🎯</span>
+            <span>Generate Campaign</span>
+        </a>
+        
+        <a href="{{ url_for('sales.sales_update_page') }}" class="nav-item {% if 'sales' in request.endpoint %}active{% endif %}">
+            <span class="nav-icon">💰</span>
+            <span>Sales Update</span>
+        </a>
+        
+        <a href="{{ url_for('analytics.analytics_page') }}" class="nav-item {% if 'analytics' in request.endpoint %}active{% endif %}">
+            <span class="nav-icon">📈</span>
+            <span>Analytics</span>
+        </a>
+        
+        <a href="{{ url_for('social.connect_accounts_page') }}" class="nav-item {% if 'social' in request.endpoint or 'connect_accounts' in request.endpoint %}active{% endif %}">
+            <span class="nav-icon">🔗</span>
+            <span>Social Accounts</span>
+        </a>
+        
+        <div class="sidebar-divider"></div>
+        
+        <a href="{{ url_for('demo_hub') }}" class="nav-item {% if 'demo' in request.endpoint %}active{% endif %}">
+            <span class="nav-icon">🎬</span>
+            <span>Live Demo</span>
+        </a>
+        
+        <a href="{{ url_for('logout') }}" class="nav-item">
+            <span class="nav-icon">🚪</span>
+            <span>Logout</span>
+        </a>
+    </nav>
+</aside>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div>
+                <h1 class="page-title">Dashboard Overview</h1>
+                <p class="page-subtitle">Welcome back, {% if current_user.business_profile %}{{ current_user.business_profile.business_name }}{% else %}{{ current_user.email }}{% endif %}</p>
+            </div>
+            
+            <div class="header-actions">
+                <a href="{{ url_for('generate_campaign_page') }}" class="btn btn-primary">
+                    🚀 Generate Campaign
+                </a>
+            </div>
+        </div>
+        
+        <!-- Stats Cards -->
+        <div class="grid grid-4 mb-4">
+            <div class="stat-card fade-in">
+                <p class="stat-label">This Week Revenue</p>
+                <h3 class="stat-value" id="week-revenue">₹0</h3>
+                <span class="stat-change positive" id="revenue-change">
+                    ↑ 0%
+                </span>
+            </div>
+            
+            <div class="stat-card fade-in" style="animation-delay: 0.1s">
+                <p class="stat-label">Items Sold</p>
+                <h3 class="stat-value" id="items-sold">0</h3>
+                <span class="stat-change positive" id="items-change">
+                    ↑ 0
+                </span>
+            </div>
+            
+            <div class="stat-card fade-in" style="animation-delay: 0.2s">
+                <p class="stat-label">Active Campaigns</p>
+                <h3 class="stat-value" id="active-campaigns">0</h3>
+                <span class="badge badge-info">Running</span>
+            </div>
+            
+            <div class="stat-card fade-in" style="animation-delay: 0.3s">
+                <p class="stat-label">Engagement Rate</p>
+                <h3 class="stat-value" id="engagement-rate">0%</h3>
+                <span class="stat-change positive" id="engagement-change">
+                    ↑ 5.2%
+                </span>
+            </div>
+        </div>
+        
+        <!-- Charts Row -->
+        <div class="grid grid-2 mb-4">
+            <!-- Revenue Chart -->
+            <div class="card fade-in">
+                <div class="card-header">
+                    <div>
+                        <h3 class="card-title">Revenue Timeline</h3>
+                        <p class="card-subtitle">Last 7 days</p>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="revenueChart"></canvas>
+                </div>
+            </div>
+            
+            <!-- Top Products Chart -->
+            <div class="card fade-in">
+                <div class="card-header">
+                    <div>
+                        <h3 class="card-title">Top Products</h3>
+                        <p class="card-subtitle">Most sold this week</p>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="productsChart"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Recent Activity -->
+        <div class="card fade-in">
+            <div class="card-header">
+                <h3 class="card-title">Recent Activity</h3>
+            </div>
+            <div id="recent-activity">
+                <p class="text-muted">Loading activity...</p>
+            </div>
+        </div>
+    </main>
+</div>
+
+<style>
+    .sidebar {
+        background: var(--bg-secondary);
+        padding: 24px;
+    }
+    
+    .sidebar-brand {
+        font-size: 20px;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 32px;
+    }
+    
+    .sidebar-nav {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 16px;
+        border-radius: 12px;
+        color: var(--text-secondary);
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+    
+    .nav-item:hover {
+        background: var(--bg-card);
+        color: var(--text-primary);
+    }
+    
+    .nav-item.active {
+        background: var(--bg-card);
+        color: var(--accent-blue);
+    }
+    
+    .nav-icon {
+        font-size: 20px;
+    }
+    
+    .sidebar-divider {
+        height: 1px;
+        background: var(--border-color);
+        margin: 16px 0;
+    }
+    
+    .header-actions {
+        display: flex;
+        gap: 12px;
+    }
+    
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 32px;
+    }
+</style>
+
+<script>
+// Load dashboard data
+async function loadDashboard() {
+    try {
+        const response = await fetch('/api/dashboard/summary');
+        const data = await response.json();
+        
+        // Update stats
+        document.getElementById('week-revenue').textContent = `₹${data.week_revenue.toLocaleString()}`;
+        document.getElementById('items-sold').textContent = data.items_sold;
+        document.getElementById('active-campaigns').textContent = data.active_campaigns;
+        document.getElementById('engagement-rate').textContent = `${data.engagement_rate}%`;
+        
+        // Update changes
+        document.getElementById('revenue-change').textContent = `↑ ${data.revenue_change}%`;
+        document.getElementById('items-change').textContent = `↑ ${data.items_change}`;
+        
+        // Revenue Chart
+        const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+        new Chart(revenueCtx, {
+            type: 'bar',
+            data: {
+                labels: data.revenue_timeline.labels,
+                datasets: [{
+                    label: 'Revenue',
+                    data: data.revenue_timeline.values,
+                    backgroundColor: 'rgba(91, 141, 239, 0.5)',
+                    borderColor: 'rgba(91, 141, 239, 1)',
+                    borderWidth: 2,
+                    borderRadius: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: { 
+                        beginAtZero: true,
+                        grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                        ticks: { color: '#8b92b2' }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { color: '#8b92b2' }
+                    }
+                }
+            }
+        });
+        
+        // Products Chart
+        const productsCtx = document.getElementById('productsChart').getContext('2d');
+        new Chart(productsCtx, {
+            type: 'doughnut',
+            data: {
+                labels: data.top_products.labels,
+                datasets: [{
+                    data: data.top_products.values,
+                    backgroundColor: [
+                        'rgba(91, 141, 239, 0.8)',
+                        'rgba(139, 92, 246, 0.8)',
+                        'rgba(16, 185, 129, 0.8)',
+                        'rgba(245, 158, 11, 0.8)',
+                        'rgba(239, 68, 68, 0.8)'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { color: '#8b92b2' }
+                    }
+                }
+            }
+        });
+        
+        // Recent Activity
+        const activityHtml = data.recent_activity.map(item => `
+            <div class="activity-item" style="display: flex; gap: 16px; padding: 16px; border-bottom: 1px solid var(--border-color);">
+                <span style="font-size: 24px;">${item.icon}</span>
+                <div style="flex: 1;">
+                    <h4 style="font-size: 15px; font-weight: 600; color: var(--text-primary); margin-bottom: 4px;">${item.title}</h4>
+                    <p style="font-size: 14px; color: var(--text-secondary);">${item.description}</p>
+                </div>
+                <span style="font-size: 13px; color: var(--text-muted);">${item.time}</span>
+            </div>
+        `).join('');
+        
+        document.getElementById('recent-activity').innerHTML = activityHtml || '<p class="text-muted">No recent activity</p>';
+        
+    } catch (error) {
+        console.error('Error loading dashboard:', error);
+    }
+}
+
+// Load on page load
+document.addEventListener('DOMContentLoaded', loadDashboard);
+</script>
+{% endblock %}

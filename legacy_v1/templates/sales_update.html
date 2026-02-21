@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+{% extends "base.html" %}
+
+{% block title %}Sales Update - Agentic Sales AI{% endblock %}
+
+{% block extra_css %}
+<style>
+/* FORCE SIDEBAR FIX - INLINE OVERRIDE */
+.sidebar { background: #141929 !important; border-right: 1px solid #262d4d !important; }
+.sidebar-brand { color: #ffffff !important; }
+.sidebar a { color: #8b92b2 !important; text-decoration: none !important; }
+.sidebar a:link { color: #8b92b2 !important; }
+.sidebar a:visited { color: #8b92b2 !important; }
+.sidebar a:hover { color: #ffffff !important; }
+.sidebar a:active { color: #8b92b2 !important; }
+.nav-item { background: transparent !important; padding: 14px 16px !important; border-radius: 12px !important; position: relative !important; }
+.nav-item:hover { background: #1a1f37 !important; }
+.nav-item.active { color: #5b8def !important; background: #1a1f37 !important; }
+.nav-item.active::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 70%;
+    background: #5b8def;
+    border-radius: 0 4px 4px 0;
+}
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="page-wrapper">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2 class="sidebar-brand">🤖 Agentic AI</h2>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <a href="/dashboard" class="nav-item">
+                <span class="nav-icon">📊</span>
+                <span>Dashboard</span>
+            </a>
+            
+            <a href="/generate-campaign" class="nav-item">
+                <span class="nav-icon">🎯</span>
+                <span>Generate Campaign</span>
+            </a>
+            
+            <a href="/sales/update" class="nav-item active">
+                <span class="nav-icon">💰</span>
+                <span>Sales Update</span>
+            </a>
+            
+            <a href="/analytics" class="nav-item">
+                <span class="nav-icon">📈</span>
+                <span>Analytics</span>
+            </a>
+            
+            <a href="/connect-accounts" class="nav-item">
+                <span class="nav-icon">🔗</span>
+                <span>Social Accounts</span>
+            </a>
+            
+            <div class="sidebar-divider"></div>
+            
+            <a href="/demo" class="nav-item">
+                <span class="nav-icon">🎬</span>
+                <span>Live Demo</span>
+            </a>
+            
+            <a href="/logout" class="nav-item">
+                <span class="nav-icon">🚪</span>
+                <span>Logout</span>
+            </a>
+        </nav>
+    </aside>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="page-header">
+            <div>
+                <h1 class="page-title">💰 Sales Update</h1>
+                <p class="page-subtitle">Track your weekly sales for better AI insights</p>
+            </div>
+        </div>
+        
+        <div class="card fade-in">
+            <div class="card-header">
+                <h3 class="card-title">Add Sales Data</h3>
+            </div>
+            
+            <form id="salesForm" style="padding: 20px;">
+                <div class="form-group">
+                    <label class="form-label">Week Starting Date</label>
+                    <input type="date" id="weekStart" class="form-input" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Total Revenue (₹)</label>
+                    <input type="number" id="revenue" class="form-input" placeholder="50000" min="0" step="100" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Items Sold</label>
+                    <input type="number" id="itemsSold" class="form-input" placeholder="45" min="0" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Notes (Optional)</label>
+                    <textarea id="notes" class="form-input" rows="3" placeholder="Any notes about this week's sales..."></textarea>
+                </div>
+                
+                <button type="submit" class="btn btn-primary btn-block">
+                    💾 Save Sales Update
+                </button>
+            </form>
+        </div>
+        
+        <!-- Sales History -->
+        <div class="card fade-in" style="margin-top: 32px;">
+            <div class="card-header">
+                <h3 class="card-title">Recent Sales History</h3>
+            </div>
+            
+            <div id="salesHistory" style="padding: 20px;">
+                <p class="text-muted">Loading...</p>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script>
+// Set today's date
+document.getElementById('weekStart').valueAsDate = new Date();
+
+// Load sales history
+async function loadSalesHistory() {
+    try {
+        const response = await fetch('/api/sales/history');
+        const history = await response.json();
+        
+        const historyDiv = document.getElementById('salesHistory');
+        
+        if (history && history.length > 0) {
+            historyDiv.innerHTML = history.map(sale => `
+                <div style="padding: 16px; background: var(--bg-secondary); border-radius: 12px; margin-bottom: 12px; border: 1px solid var(--border-color);">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <strong style="color: var(--text-primary);">Week of ${sale.week_start_date}</strong>
+                            <p style="color: var(--text-secondary); font-size: 14px; margin-top: 4px;">
+                                ${sale.total_items_sold || 0} items sold
+                            </p>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="font-size: 20px; font-weight: 700; color: var(--accent-green);">
+                                ₹${(sale.total_revenue || 0).toLocaleString()}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        } else {
+            historyDiv.innerHTML = '<p class="text-muted">No sales history yet. Add your first sales update above!</p>';
+        }
+    } catch (error) {
+        console.error('Error loading history:', error);
+        document.getElementById('salesHistory').innerHTML = '<p class="text-muted">Error loading history</p>';
+    }
+}
+
+// Handle form submission
+document.getElementById('salesForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const data = {
+        week_start_date: document.getElementById('weekStart').value,
+        products: [{
+            product_name: 'General Sales',
+            quantity: parseInt(document.getElementById('itemsSold').value) || 0,
+            revenue: parseFloat(document.getElementById('revenue').value) || 0
+        }],
+        whatsapp_conversations: 0,
+        notes: document.getElementById('notes').value || ''
+    };
+    
+    try {
+        const response = await fetch('/api/sales/update', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+        
+        const result = await response.json();
+        
+        if (result.status === 'success') {
+            alert('✅ Sales data saved successfully!');
+            document.getElementById('salesForm').reset();
+            document.getElementById('weekStart').valueAsDate = new Date();
+            loadSalesHistory();
+        } else {
+            alert('⚠️ ' + (result.message || 'Error saving sales data'));
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('❌ Error saving sales data: ' + error.message);
+    }
+});
+
+// Load history on page load
+document.addEventListener('DOMContentLoaded', loadSalesHistory);
+</script>
+{% endblock %}

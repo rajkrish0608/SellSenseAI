@@ -1,0 +1,156 @@
+{
+  "name": "🤖 Advanced 3-Agent Campaign Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "campaign-3-agents",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-main",
+      "name": "📥 Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 400],
+      "webhookId": "3-agents-campaign"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "business",
+              "name": "business_profile",
+              "value": "={{ $json.business_profile }}",
+              "type": "object"
+            },
+            {
+              "id": "goal",
+              "name": "campaign_goal",
+              "value": "={{ $json.campaign_goal || 'sales' }}",
+              "type": "string"
+            },
+            {
+              "id": "sales",
+              "name": "sales_data",
+              "value": "={{ $json.sales_data || [] }}",
+              "type": "array"
+            }
+          ]
+        }
+      },
+      "id": "extract-data",
+      "name": "📋 Extract Input Data",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.2,
+      "position": [460, 400]
+    },
+    {
+      "parameters": {
+        "url": "http://host.docker.internal:5000/api/analyst/analyze",
+        "method": "POST",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ business_profile: $json.business_profile, sales_data: $json.sales_data }) }}",
+        "options": {
+          "timeout": 60000
+        }
+      },
+      "id": "analyst-bot",
+      "name": "🔍 AGENT 1: Analyst Bot",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [680, 400],
+      "notes": "Analyzes sales data and generates insights"
+    },
+    {
+      "parameters": {
+        "url": "http://host.docker.internal:5000/api/strategy/create",
+        "method": "POST",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ business_profile: $('📋 Extract Input Data').item.json.business_profile, campaign_goal: $('📋 Extract Input Data').item.json.campaign_goal, insights: $json }) }}",
+        "options": {
+          "timeout": 90000
+        }
+      },
+      "id": "strategy-bot",
+      "name": "🧠 AGENT 2: Strategy Bot",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [900, 400],
+      "notes": "Creates 7-day campaign strategy based on insights"
+    },
+    {
+      "parameters": {
+        "url": "http://host.docker.internal:5000/api/content/generate",
+        "method": "POST",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ business_profile: $('📋 Extract Input Data').item.json.business_profile, strategy: $json, insights: $('🔍 AGENT 1: Analyst Bot').item.json }) }}",
+        "options": {
+          "timeout": 120000
+        }
+      },
+      "id": "content-bot",
+      "name": "🎨 AGENT 3: Content Bot",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1120, 400],
+      "notes": "Generates Instagram/WhatsApp content and AI posters"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Combine all agent outputs into final campaign\nconst insights = $('🔍 AGENT 1: Analyst Bot').item.json;\nconst strategy = $('🧠 AGENT 2: Strategy Bot').item.json;\nconst content = $('🎨 AGENT 3: Content Bot').item.json;\n\nconst completeCampaign = {\n  status: 'success',\n  message: 'Campaign generated successfully by 3 AI agents!',\n  campaign_name: strategy.campaign_name || 'AI Generated Campaign',\n  campaign_type: strategy.campaign_type || 'general',\n  \n  // Include all agent data\n  insights: insights,\n  strategy: strategy,\n  daily_content: content.daily_content || [],\n  \n  // Summary stats\n  total_days: content.daily_content ? content.daily_content.length : 0,\n  focus_product: insights.recommended_focus ? insights.recommended_focus.product : 'N/A',\n  \n  // Metadata\n  generated_at: new Date().toISOString(),\n  agents_used: ['analyst', 'strategy', 'content']\n};\n\nreturn [{ json: completeCampaign }];"
+      },
+      "id": "combine-results",
+      "name": "🔗 Combine All Results",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1340, 400],
+      "notes": "Merges outputs from all 3 agents into final campaign"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify($json) }}",
+        "options": {}
+      },
+      "id": "respond-final",
+      "name": "✅ Return Complete Campaign",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1560, 400]
+    }
+  ],
+  "connections": {
+    "📥 Webhook Trigger": {
+      "main": [[{"node": "📋 Extract Input Data", "type": "main", "index": 0}]]
+    },
+    "📋 Extract Input Data": {
+      "main": [[{"node": "🔍 AGENT 1: Analyst Bot", "type": "main", "index": 0}]]
+    },
+    "🔍 AGENT 1: Analyst Bot": {
+      "main": [[{"node": "🧠 AGENT 2: Strategy Bot", "type": "main", "index": 0}]]
+    },
+    "🧠 AGENT 2: Strategy Bot": {
+      "main": [[{"node": "🎨 AGENT 3: Content Bot", "type": "main", "index": 0}]]
+    },
+    "🎨 AGENT 3: Content Bot": {
+      "main": [[{"node": "🔗 Combine All Results", "type": "main", "index": 0}]]
+    },
+    "🔗 Combine All Results": {
+      "main": [[{"node": "✅ Return Complete Campaign", "type": "main", "index": 0}]]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": ["campaign", "ai-agents", "hackathon"],
+  "triggerCount": 0,
+  "updatedAt": "2026-02-15T00:00:00.000Z",
+  "versionId": "1"
+}
